@@ -8,8 +8,11 @@ export default class Autowhatever extends Component {
   static propTypes = {
     id: PropTypes.string,                  // Used in aria-* attributes. If multiple Autowhatever's are rendered on a page, they must have unique ids.
     multiSection: PropTypes.bool,          // Indicates whether a multi section layout should be rendered.
+    multiLevel: PropTypes.bool,          // Indicates whether a multi level layout should be rendered.
     items: PropTypes.array.isRequired,     // Array of items or sections to render.
+    subItems: PropTypes.array,     // Array of submenu items to render.
     renderItem: PropTypes.func,            // This function renders a single item.
+    renderSubItem: PropTypes.func,            // This function renders a single item.
     shouldRenderSection: PropTypes.func,   // This function gets a section and returns whether it should be rendered, or not.
     renderSectionTitle: PropTypes.func,    // This function gets a section and renders its title.
     getSectionItems: PropTypes.func,       // This function gets a section and returns its items, which will be passed into `renderItem` for rendering.
@@ -20,15 +23,21 @@ export default class Autowhatever extends Component {
     ]),
     focusedSectionIndex: PropTypes.number, // Section index of the focused item
     focusedItemIndex: PropTypes.number,    // Focused item index (within a section)
+    focusedSubItemIndex: PropTypes.number, // Focused subitem index (within a section)
+    isPrimaryFocused: PropTypes.bool,      // Is primary menu focused
     theme: PropTypes.object                // Styles. See: https://github.com/markdalgleish/react-themeable
   };
 
   static defaultProps = {
     id: '1',
     multiSection: false,
+    multiLevel: false,
     shouldRenderSection: () => true,
     renderItem: () => {
       throw new Error('`renderItem` must be provided');
+    },
+    renderSubItem: () => {
+      throw new Error('`renderSubItem` must be provided');
     },
     renderSectionTitle: () => {
       throw new Error('`renderSectionTitle` must be provided');
@@ -40,6 +49,8 @@ export default class Autowhatever extends Component {
     itemProps: {},
     focusedSectionIndex: null,
     focusedItemIndex: null,
+    focusedSubItemIndex: null,
+    isPrimaryFocused: true,      // Is primary menu focused
     theme: {
       container: 'react-autowhatever__container',
       containerOpen: 'react-autowhatever__container--open',
@@ -49,7 +60,10 @@ export default class Autowhatever extends Component {
       itemFocused: 'react-autowhatever__item--focused',
       sectionContainer: 'react-autowhatever__section-container',
       sectionTitle: 'react-autowhatever__section-title',
-      sectionItemsContainer: 'react-autowhatever__section-items-container'
+      sectionItemsContainer: 'react-autowhatever__section-items-container',
+      subItemsContainer: 'react-autowhatever__subitems-container',
+      subItem: 'react-autowhatever__subitem',
+      subItemFocused: 'react-autowhatever__subitem--focused'
     }
   };
 
@@ -70,15 +84,31 @@ export default class Autowhatever extends Component {
     return `react-autowhatever-${id}-${section}-item-${itemIndex}`;
   }
 
+  getSubItemId(subItemIndex) {
+    if (subItemIndex === null) {
+      return null;
+    }
+
+    const { id } = this.props;
+
+    return `react-autowhatever-${id}-subitem-${subItemIndex}`;
+  }
+
   getItemsContainerId() {
     const { id } = this.props;
 
     return `react-whatever-${id}`;
   }
+  getSubItemsContainerId() {
+    const { id } = this.props;
+
+    return `react-whatever-sub-${id}`;
+  }
 
   renderItemsList(theme, items, sectionIndex) {
     const { renderItem, focusedSectionIndex, focusedItemIndex } = this.props;
     const isItemPropsFunction = (typeof this.props.itemProps === 'function');
+    const isPrimaryFocused = true;
 
     return items.map((item, itemIndex) => {
       const itemPropsObj = isItemPropsFunction
@@ -87,16 +117,16 @@ export default class Autowhatever extends Component {
       const { onMouseEnter, onMouseLeave, onMouseDown, onClick } = itemPropsObj;
 
       const onMouseEnterFn = onMouseEnter ?
-        event => onMouseEnter(event, { sectionIndex, itemIndex }) :
+        event => onMouseEnter(event, { sectionIndex, itemIndex, isPrimaryFocused }) :
         noop;
       const onMouseLeaveFn = onMouseLeave ?
-        event => onMouseLeave(event, { sectionIndex, itemIndex }) :
+        event => onMouseLeave(event, { sectionIndex, itemIndex, isPrimaryFocused }) :
         noop;
       const onMouseDownFn = onMouseDown ?
-        event => onMouseDown(event, { sectionIndex, itemIndex }) :
+        event => onMouseDown(event, { sectionIndex, itemIndex, isPrimaryFocused }) :
         noop;
       const onClickFn = onClick ?
-        event => onClick(event, { sectionIndex, itemIndex }) :
+        event => onClick(event, { sectionIndex, itemIndex, isPrimaryFocused }) :
         noop;
       const itemProps = {
         id: this.getItemId(sectionIndex, itemIndex),
@@ -114,6 +144,49 @@ export default class Autowhatever extends Component {
       return (
         <li {...itemProps}>
           {renderItem(item)}
+        </li>
+      );
+    });
+  }
+
+  renderSubItemsList(theme, subItems) {
+    const { renderSubItem, focusedSubItemIndex } = this.props;
+    const isItemPropsFunction = (typeof this.props.itemProps === 'function');
+    const isPrimaryFocused = false;
+
+    return subItems.map((item, subItemIndex) => {
+      const itemPropsObj = isItemPropsFunction
+        ? this.props.itemProps({ subItemIndex })
+        : this.props.itemProps;
+      const { onMouseEnter, onMouseLeave, onMouseDown, onClick } = itemPropsObj;
+
+      const onMouseEnterFn = onMouseEnter ?
+        event => onMouseEnter(event, { subItemIndex, isPrimaryFocused }) :
+        noop;
+      const onMouseLeaveFn = onMouseLeave ?
+        event => onMouseLeave(event, { subItemIndex, isPrimaryFocused }) :
+        noop;
+      const onMouseDownFn = onMouseDown ?
+        event => onMouseDown(event, { subItemIndex, isPrimaryFocused }) :
+        noop;
+      const onClickFn = onClick ?
+        event => onClick(event, { isPrimaryFocused, subItemIndex }) :
+        noop;
+      const itemProps = {
+        id: this.getSubItemId(subItemIndex, true),
+        role: 'option',
+        ...theme(subItemIndex, 'subItem', subItemIndex === focusedSubItemIndex &&
+                                    'subItemFocused'),
+        ...itemPropsObj,
+        onMouseEnter: onMouseEnterFn,
+        onMouseLeave: onMouseLeaveFn,
+        onMouseDown: onMouseDownFn,
+        onClick: onClickFn
+      };
+
+      return (
+        <li {...itemProps}>
+          {renderSubItem(item)}
         </li>
       );
     });
@@ -170,16 +243,38 @@ export default class Autowhatever extends Component {
     }
 
     return (
-      <ul id={this.getItemsContainerId()}
-          role="listbox"
-          {...theme('itemsContainer', 'itemsContainer')}>
-        {this.renderItemsList(theme, items, null)}
-      </ul>
+      <div id={this.getItemsContainerId()}
+           role="listbox"
+           {...theme('itemsContainer', 'itemsContainer')}>
+        <ul
+           {...theme('itemsList', 'itemsList')}>
+            {this.renderItemsList(theme, items, null)}
+        </ul>
+      </div>
+    );
+  }
+
+  renderSubItems(theme) {
+    const { subItems } = this.props;
+
+    if (!subItems || subItems.length === 0) {
+      return null;
+    }
+
+    return (
+      <div id={this.getSubItemsContainerId()}
+           role="listbox"
+           {...theme('subItemsContainer', 'subItemsContainer')}>
+        <ul
+           {...theme('subItemsList', 'subItemsList')}>
+            {this.renderSubItemsList(theme, subItems, null)}
+        </ul>
+      </div>
     );
   }
 
   onKeyDown(event) {
-    const { inputProps, focusedSectionIndex, focusedItemIndex } = this.props;
+    const { inputProps, focusedSectionIndex, focusedItemIndex, isPrimaryFocused, focusedSubItemIndex, multiLevel } = this.props;
     const { onKeyDown: onKeyDownFn } = inputProps; // Babel is throwing:
                                                    //   "onKeyDown" is read-only
                                                    // on:
@@ -188,29 +283,64 @@ export default class Autowhatever extends Component {
     switch (event.key) {
       case 'ArrowDown':
       case 'ArrowUp':
-        const { multiSection, items, getSectionItems } = this.props;
-        const sectionIterator = createSectionIterator({
-          multiSection,
-          data: multiSection ?
-            items.map(section => getSectionItems(section).length) :
-            items.length
-        });
+        const { multiSection, items, getSectionItems, subItems } = this.props;
+        let sectionIterator;
         const nextPrev = (event.key === 'ArrowDown' ? 'next' : 'prev');
-        const [newFocusedSectionIndex, newFocusedItemIndex] =
-          sectionIterator[nextPrev]([focusedSectionIndex, focusedItemIndex]);
 
-        onKeyDownFn(event, { newFocusedSectionIndex, newFocusedItemIndex });
+        if (isPrimaryFocused) {
+          sectionIterator = createSectionIterator({
+            multiSection,
+            data: multiSection ?
+                items.map(section => getSectionItems(section).length) :
+                items.length
+          });
+          const [newFocusedSectionIndex, newFocusedItemIndex] =
+            sectionIterator[nextPrev]([focusedSectionIndex, focusedItemIndex]);
+
+          onKeyDownFn(event, { focusedItemIndex, focusedSectionIndex, newFocusedSectionIndex, newFocusedItemIndex, isPrimaryFocused });
+        } else {
+          sectionIterator = createSectionIterator({
+            multiSection: false,
+            data: subItems.length
+          });
+          let [newFocusedSectionIndex, newFocusedSubItemIndex] =
+            sectionIterator[nextPrev]([0, focusedSubItemIndex]);
+          let newFocusedItemIndex = focusedItemIndex;
+
+          newFocusedSectionIndex = focusedSectionIndex;
+          onKeyDownFn(event, { focusedItemIndex, newFocusedItemIndex, focusedSectionIndex, newFocusedSectionIndex, focusedSubItemIndex, newFocusedSubItemIndex, isPrimaryFocused });
+        }
         break;
+      case 'ArrowRight':
+        if (isPrimaryFocused && multiLevel) {
+          const newFocusedSubItemIndex = 0;
+          const isPrimaryFocused = false;
+          let newFocusedItemIndex = focusedItemIndex;
+          let newFocusedSectionIndex = focusedSectionIndex;
 
+          onKeyDownFn(event, { focusedItemIndex, newFocusedItemIndex, focusedSectionIndex, newFocusedSectionIndex, focusedSubItemIndex, newFocusedSubItemIndex, isPrimaryFocused });
+        }
+        break;
+      case 'ArrowLeft':
+        if (!isPrimaryFocused && multiLevel) {
+          const newFocusedSubItemIndex = null;
+          const isPrimaryFocused = true;
+          let newFocusedItemIndex = focusedItemIndex;
+          let newFocusedSectionIndex = focusedSectionIndex;
+
+          onKeyDownFn(event, { focusedItemIndex, newFocusedItemIndex, focusedSectionIndex, newFocusedSectionIndex, focusedSubItemIndex, newFocusedSubItemIndex, isPrimaryFocused });
+        }
+        break;
       default:
-        onKeyDownFn(event, { focusedSectionIndex, focusedItemIndex });
+        onKeyDownFn(event, { focusedSectionIndex, focusedItemIndex, isPrimaryFocused, focusedSubItemIndex });
     }
   }
 
   render() {
-    const { multiSection, focusedSectionIndex, focusedItemIndex } = this.props;
+    const { multiSection, multiLevel, focusedSectionIndex, focusedItemIndex } = this.props;
     const theme = themeable(this.props.theme);
     const renderedItems = multiSection ? this.renderSections(theme) : this.renderItems(theme);
+    const renderedSubItems= multiLevel ? this.renderSubItems(theme):'';
     const isOpen = (renderedItems !== null);
     const ariaActivedescendant = this.getItemId(focusedSectionIndex, focusedItemIndex);
     const inputProps = {
@@ -232,6 +362,7 @@ export default class Autowhatever extends Component {
       <div {...theme('container', 'container', isOpen && 'containerOpen')}>
         <input {...inputProps} />
         {renderedItems}
+        {renderedSubItems}
       </div>
     );
   }

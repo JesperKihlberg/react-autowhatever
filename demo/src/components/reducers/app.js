@@ -1,4 +1,4 @@
-import { UPDATE_INPUT_VALUE, UPDATE_FOCUSED_ITEM } from 'actions/app';
+import { UPDATE_INPUT_VALUE, UPDATE_FOCUSED_ITEM, UPDATE_FOCUSED_MENU } from 'actions/app';
 
 const initialState = {
   0: {
@@ -30,6 +30,11 @@ const initialState = {
     value: 'Multi section - Up/Down/Enter',
     focusedSectionIndex: null,
     focusedItemIndex: null
+  },
+  8: {
+    value: 'Multi level',
+    focusedSectionIndex: null,
+    focusedItemIndex: null
   }
 };
 
@@ -51,6 +56,19 @@ export default function(state = initialState, action) {
           ...state[action.exampleNumber],
           focusedSectionIndex: action.focusedSectionIndex,
           focusedItemIndex: action.focusedItemIndex
+        }
+      };
+
+    case UPDATE_FOCUSED_MENU:
+      return {
+        ...state,
+        [action.exampleNumber]: {
+          ...state[action.exampleNumber],
+          focusedSectionIndex: action.focusedSectionIndex,
+          focusedItemIndex: action.focusedItemIndex,
+          isPrimaryFocused: action.isPrimaryFocused,
+          focusedSubItemIndex: action.focusedSubItemIndex
+
         }
       };
 
