@@ -96,14 +96,12 @@ function mapDispatchToProps(dispatch) {
       }
     },
     onMouseEnter: (event, { sectionIndex, itemIndex, isPrimaryFocused, subItemIndex }) => {
-        console.log("mouseenter");
       dispatch(updateFocusedMenu(exampleId, sectionIndex, itemIndex, isPrimaryFocused, subItemIndex));
     },
     onMouseLeave: () => {
       dispatch(updateFocusedMenu(exampleId, null, null, null, null));
     },
     onMouseDown: (event, { itemIndex, isPrimaryFocused, subItemIndex }) => {
-        console.log( { itemIndex, isPrimaryFocused, subItemIndex });
       if (isPrimaryFocused) {
         dispatch(updateInputValue(exampleId, items[itemIndex].text + ' clicked'));
       } else {

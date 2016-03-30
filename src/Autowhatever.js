@@ -245,7 +245,7 @@ export default class Autowhatever extends Component {
     return (
       <ul
         role="listbox"
-        {...theme('itemsList', 'itemsList')}>
+        {...theme('itemsContainer', 'itemsContainer')}>
         {this.renderItemsList(theme, items, null)}
       </ul>
     );
@@ -261,7 +261,7 @@ export default class Autowhatever extends Component {
     return (
       <ul
         role="listbox"
-        {...theme('subItemsList', 'subItemsList')}>
+        {...theme('subItemsContainer', 'subItemsContainer')}>
         {this.renderSubItemsList(theme, subItems, null)}
       </ul>
     );
