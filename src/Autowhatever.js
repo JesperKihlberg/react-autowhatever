@@ -8,11 +8,11 @@ export default class Autowhatever extends Component {
   static propTypes = {
     id: PropTypes.string,                  // Used in aria-* attributes. If multiple Autowhatever's are rendered on a page, they must have unique ids.
     multiSection: PropTypes.bool,          // Indicates whether a multi section layout should be rendered.
-    multiLevel: PropTypes.bool,          // Indicates whether a multi level layout should be rendered.
+    multiLevel: PropTypes.bool,            // Indicates whether a multi level layout should be rendered.
     items: PropTypes.array.isRequired,     // Array of items or sections to render.
-    subItems: PropTypes.array,     // Array of submenu items to render.
+    subItems: PropTypes.array,             // Array of submenu items to render.
     renderItem: PropTypes.func,            // This function renders a single item.
-    renderSubItem: PropTypes.func,            // This function renders a single item.
+    renderSubItem: PropTypes.func,         // This function renders a single item.
     shouldRenderSection: PropTypes.func,   // This function gets a section and returns whether it should be rendered, or not.
     renderSectionTitle: PropTypes.func,    // This function gets a section and renders its title.
     getSectionItems: PropTypes.func,       // This function gets a section and returns its items, which will be passed into `renderItem` for rendering.
@@ -243,14 +243,11 @@ export default class Autowhatever extends Component {
     }
 
     return (
-      <div id={this.getItemsContainerId()}
-           role="listbox"
-           {...theme('itemsContainer', 'itemsContainer')}>
-        <ul
-           {...theme('itemsList', 'itemsList')}>
-            {this.renderItemsList(theme, items, null)}
-        </ul>
-      </div>
+      <ul
+        role="listbox"
+        {...theme('itemsList', 'itemsList')}>
+        {this.renderItemsList(theme, items, null)}
+      </ul>
     );
   }
 
@@ -262,14 +259,11 @@ export default class Autowhatever extends Component {
     }
 
     return (
-      <div id={this.getSubItemsContainerId()}
-           role="listbox"
-           {...theme('subItemsContainer', 'subItemsContainer')}>
-        <ul
-           {...theme('subItemsList', 'subItemsList')}>
-            {this.renderSubItemsList(theme, subItems, null)}
-        </ul>
-      </div>
+      <ul
+        role="listbox"
+        {...theme('subItemsList', 'subItemsList')}>
+        {this.renderSubItemsList(theme, subItems, null)}
+      </ul>
     );
   }
 
