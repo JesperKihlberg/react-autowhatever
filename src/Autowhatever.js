@@ -252,9 +252,9 @@ export default class Autowhatever extends Component {
   }
 
   renderSubItems(theme) {
-    const { subItems } = this.props;
+    const { subItems, focusedItemIndex } = this.props;
 
-    if (!subItems || subItems.length === 0) {
+    if (focusedItemIndex===null || !subItems || subItems.length === 0) {
       return null;
     }
 
