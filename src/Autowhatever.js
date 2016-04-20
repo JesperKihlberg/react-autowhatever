@@ -193,9 +193,10 @@ export default class Autowhatever extends Component {
   }
 
   renderSections(theme) {
-    const { items, getSectionItems } = this.props;
+    const { items, multiLevel, getSectionItems } = this.props;
     const sectionItemsArray = items.map(section => getSectionItems(section));
     const noItemsExist = sectionItemsArray.every(sectionItems => sectionItems.length === 0);
+    const renderedSubItems= multiLevel ? this.renderSubItems(theme):'';
 
     if (noItemsExist) {
       return null;
@@ -227,6 +228,7 @@ export default class Autowhatever extends Component {
                 <ul {...theme('sectionItemsContainer', 'sectionItemsContainer')}>
                   {this.renderItemsList(theme, sectionItemsArray[sectionIndex], sectionIndex)}
                 </ul>
+                {renderedSubItems}
               </div>
             );
           })
@@ -334,7 +336,7 @@ export default class Autowhatever extends Component {
     const { multiSection, multiLevel, focusedSectionIndex, focusedItemIndex } = this.props;
     const theme = themeable(this.props.theme);
     const renderedItems = multiSection ? this.renderSections(theme) : this.renderItems(theme);
-    const renderedSubItems= multiLevel ? this.renderSubItems(theme):'';
+    const renderedSubItems= multiLevel&&!multiSection ? this.renderSubItems(theme):'';
     const isOpen = (renderedItems !== null);
     const ariaActivedescendant = this.getItemId(focusedSectionIndex, focusedItemIndex);
     const inputProps = {
