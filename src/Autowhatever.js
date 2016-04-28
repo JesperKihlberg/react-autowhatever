@@ -193,10 +193,9 @@ export default class Autowhatever extends Component {
   }
 
   renderSections(theme) {
-    const { items, multiLevel, getSectionItems } = this.props;
+    const { items, multiLevel, focusedSectionIndex, getSectionItems } = this.props;
     const sectionItemsArray = items.map(section => getSectionItems(section));
     const noItemsExist = sectionItemsArray.every(sectionItems => sectionItems.length === 0);
-    const renderedSubItems= multiLevel ? this.renderSubItems(theme):'';
 
     if (noItemsExist) {
       return null;
@@ -215,6 +214,7 @@ export default class Autowhatever extends Component {
             }
 
             const sectionTitle = renderSectionTitle(section);
+            const renderedSubItems= multiLevel && (sectionIndex === focusedSectionIndex) ? this.renderSubItems(theme):'';
 
             return (
               <div key={sectionIndex}
