@@ -106,7 +106,7 @@ export default class Autowhatever extends Component {
   }
 
   renderItemsList(theme, items, sectionIndex) {
-    const { renderItem, focusedSectionIndex, focusedItemIndex } = this.props;
+    const { renderItem, multiLevel, focusedSectionIndex, focusedItemIndex } = this.props;
     const isItemPropsFunction = (typeof this.props.itemProps === 'function');
     const isPrimaryFocused = true;
 
@@ -140,10 +140,13 @@ export default class Autowhatever extends Component {
         onMouseDown: onMouseDownFn,
         onClick: onClickFn
       };
+      
+      const renderedSubItems= multiLevel && (sectionIndex === focusedSectionIndex && itemIndex === focusedItemIndex) ? this.renderSubItems(theme):'';
 
       return (
         <li {...itemProps}>
-          {renderItem(item)}
+            {renderItem(item)}
+            {renderedSubItems}
         </li>
       );
     });
@@ -193,7 +196,7 @@ export default class Autowhatever extends Component {
   }
 
   renderSections(theme) {
-    const { items, multiLevel, focusedSectionIndex, getSectionItems } = this.props;
+    const { items, getSectionItems } = this.props;
     const sectionItemsArray = items.map(section => getSectionItems(section));
     const noItemsExist = sectionItemsArray.every(sectionItems => sectionItems.length === 0);
 
@@ -214,7 +217,6 @@ export default class Autowhatever extends Component {
             }
 
             const sectionTitle = renderSectionTitle(section);
-            const renderedSubItems= multiLevel && (sectionIndex === focusedSectionIndex) ? this.renderSubItems(theme):'';
 
             return (
               <div key={sectionIndex}
@@ -228,7 +230,6 @@ export default class Autowhatever extends Component {
                 <ul {...theme('sectionItemsContainer', 'sectionItemsContainer')}>
                   {this.renderItemsList(theme, sectionItemsArray[sectionIndex], sectionIndex)}
                 </ul>
-                {renderedSubItems}
               </div>
             );
           })
@@ -333,10 +334,9 @@ export default class Autowhatever extends Component {
   }
 
   render() {
-    const { multiSection, multiLevel, focusedSectionIndex, focusedItemIndex } = this.props;
+    const { multiSection, focusedSectionIndex, focusedItemIndex } = this.props;
     const theme = themeable(this.props.theme);
     const renderedItems = multiSection ? this.renderSections(theme) : this.renderItems(theme);
-    const renderedSubItems= multiLevel&&!multiSection ? this.renderSubItems(theme):'';
     const isOpen = (renderedItems !== null);
     const ariaActivedescendant = this.getItemId(focusedSectionIndex, focusedItemIndex);
     const inputProps = {
@@ -358,7 +358,6 @@ export default class Autowhatever extends Component {
       <div {...theme('container', 'container', isOpen && 'containerOpen')}>
         <input {...inputProps} />
         {renderedItems}
-        {renderedSubItems}
       </div>
     );
   }
