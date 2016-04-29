@@ -144,9 +144,11 @@ export default class Autowhatever extends Component {
       const renderedSubItems= multiLevel && (sectionIndex === focusedSectionIndex && itemIndex === focusedItemIndex) ? this.renderSubItems(theme):'';
 
       return (
-        <li {...itemProps}>
+        <li className={itemProps.className}>
+          <div {...itemProps}>
             {renderItem(item)}
-            {renderedSubItems}
+          </div>
+          {renderedSubItems}
         </li>
       );
     });
