@@ -144,7 +144,7 @@ export default class Autowhatever extends Component {
       const renderedSubItems= multiLevel && (sectionIndex === focusedSectionIndex && itemIndex === focusedItemIndex) ? this.renderSubItems(theme):'';
 
       return (
-        <li className={itemProps.className}>
+        <li className={itemProps.className} key={itemIndex}>
           <div {...itemProps}>
             {renderItem(item)}
           </div>
@@ -213,7 +213,7 @@ export default class Autowhatever extends Component {
            role="listbox"
            {...theme('itemsContainer', 'itemsContainer')}>
         {
-          items.map((section, sectionIndex) => {
+          sectionItemsArray.map((section, sectionIndex) => {
             if (!shouldRenderSection(section)) {
               return null;
             }
