@@ -218,7 +218,7 @@ export default class Autowhatever extends Component {
               return null;
             }
 
-            const sectionTitle = renderSectionTitle(section);
+            const sectionTitle = renderSectionTitle(items[sectionIndex]);
 
             return (
               <div key={sectionIndex}
