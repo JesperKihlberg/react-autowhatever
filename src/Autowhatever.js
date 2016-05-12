@@ -249,6 +249,7 @@ export default class Autowhatever extends Component {
     }
 
     const id = this.props;
+
     return (
       <ul
         {...theme(`react-autowhatever-${id}-items-container`, 'itemsContainer')}>
@@ -264,6 +265,8 @@ export default class Autowhatever extends Component {
     if (focusedItemIndex===null || !subItems || subItems.length === 0) {
       return null;
     }
+
+    const id = this.props;
 
     return (
       <ul
