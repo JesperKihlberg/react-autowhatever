@@ -207,7 +207,6 @@ export default class Autowhatever extends Component {
     if (noItemsExist) {
       return null;
     }
-
     const { id, shouldRenderSection, renderSectionTitle } = this.props;
 
     return (
@@ -215,7 +214,7 @@ export default class Autowhatever extends Component {
            role="listbox"
            {...theme(`react-autowhatever-${id}-items-container`, 'itemsContainer')}>
         {
-          sectionItemsArray.map((section, sectionIndex) => {
+          items.map((section, sectionIndex) => {
             if (!shouldRenderSection(section)) {
               return null;
             }
@@ -231,7 +230,7 @@ export default class Autowhatever extends Component {
                     </div>
                 }
                 <ul {...theme(`react-autowhatever-${id}-section-${sectionIndex}-items-container`, 'sectionItemsContainer')}>
-                  {this.renderItemsList(theme, sectionItemsArray[sectionIndex], sectionIndex)}
+                  {this.renderItemsList(theme, items[sectionIndex].items, sectionIndex)}
                 </ul>
               </div>
             );
@@ -252,8 +251,8 @@ export default class Autowhatever extends Component {
 
     return (
       <ul
-        {...theme(`react-autowhatever-${id}-items-container`, 'itemsContainer')}>
-        role="listbox"
+        {...theme(`react-autowhatever-${id}-items-container`, 'itemsContainer')}
+        role="listbox">
         {this.renderItemsList(theme, items, null)}
       </ul>
     );
@@ -270,8 +269,8 @@ export default class Autowhatever extends Component {
 
     return (
       <ul
-        {...theme(`react-autowhatever-${id}-subitems-container`, 'subitemsContainer')}>
-        role="listbox"
+        {...theme(`react-autowhatever-${id}-subitems-container`, 'subitemsContainer')}
+        role="listbox">
         {this.renderSubItemsList(theme, subItems, null)}
       </ul>
     );

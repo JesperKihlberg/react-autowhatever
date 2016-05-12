@@ -29,7 +29,7 @@ const items = [{
 }];
 
 function shouldRenderSection(section) {
-  return section.items && section.items.length > 0;
+  return section.items.length > 0;
 }
 
 function renderSectionTitle(section) {
