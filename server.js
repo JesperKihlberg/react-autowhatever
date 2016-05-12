@@ -8,7 +8,7 @@ new WebpackDevServer(webpack(config), {
   historyApiFallback: true
 }).listen(3080, 'localhost', function(error) {
   if (error) {
-    console.error(error);
+    console.error(error); // eslint-disable-line no-console
   } else {
     console.log('Demo is ready at http://localhost:3080/demo/dist/index.html');
   }
