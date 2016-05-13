@@ -142,12 +142,19 @@ export default class Autowhatever extends Component {
         onMouseDown: onMouseDownFn,
         onClick: onClickFn
       };
-      
+
       const renderedSubItems= multiLevel && (sectionIndex === focusedSectionIndex && itemIndex === focusedItemIndex) ? this.renderSubItems(theme):'';
+      let remainingItemProps = {};
+
+      Object.keys(itemProps).forEach(function(key) {
+        if(key != 'className') {
+          remainingItemProps[key] = itemProps[key];
+        }
+      });
 
       return (
         <li className={itemProps.className} key={itemIndex}>
-          <div {...itemProps}>
+          <div {...remainingItemProps}>
             {renderItem(item)}
           </div>
           {renderedSubItems}

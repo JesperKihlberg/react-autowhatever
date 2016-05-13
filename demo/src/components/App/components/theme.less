@@ -25,7 +25,10 @@
 }
 
 .itemsContainer {
+  margin: 0;
   position: relative;
+  padding: 0;
+  list-style: none;
   top: -1px;
   width: 280px;
   border: 1px solid @border-color;
@@ -70,8 +73,10 @@
 
 
 .subItemsContainer {
-  position: relative;
-  top: -1px;
+  list-style-type: none;
+  position: absolute;
+  left: 280px;
+  margin-top: -30px;
   width: 280px;
   border: 1px solid @border-color;
   background-color: #fff;
