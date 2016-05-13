@@ -230,7 +230,7 @@ export default class Autowhatever extends Component {
                     </div>
                 }
                 <ul {...theme(`react-autowhatever-${id}-section-${sectionIndex}-items-container`, 'sectionItemsContainer')}>
-                  {this.renderItemsList(theme, items[sectionIndex].items, sectionIndex)}
+                  {this.renderItemsList(theme, sectionItemsArray[sectionIndex], sectionIndex)}
                 </ul>
               </div>
             );
@@ -269,7 +269,7 @@ export default class Autowhatever extends Component {
 
     return (
       <ul
-        {...theme(`react-autowhatever-${id}-subitems-container`, 'subitemsContainer')}
+        {...theme(`react-autowhatever-${id}-subitems-container`, 'subItemsContainer')}
         role="listbox">
         {this.renderSubItemsList(theme, subItems, null)}
       </ul>
