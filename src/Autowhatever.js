@@ -17,6 +17,7 @@ export default class Autowhatever extends Component {
     renderSectionTitle: PropTypes.func,    // This function gets a section and renders its title.
     getSectionItems: PropTypes.func,       // This function gets a section and returns its items, which will be passed into `renderItem` for rendering.
     inputProps: PropTypes.object,          // Arbitrary input props
+    input: PropTypes.func,               //Custom input element
     itemProps: PropTypes.oneOfType([       // Arbitrary item props
       PropTypes.object,
       PropTypes.func
@@ -46,6 +47,7 @@ export default class Autowhatever extends Component {
       throw new Error('`getSectionItems` must be provided');
     },
     inputProps: {},
+    input: null,
     itemProps: {},
     focusedSectionIndex: null,
     focusedItemIndex: null,
@@ -366,10 +368,12 @@ export default class Autowhatever extends Component {
       ...this.props.inputProps,
       onKeyDown: this.props.inputProps.onKeyDown && this.onKeyDown
     };
+    const Input = this.props.input;
+    const input = Input ? <Input {...inputProps} /> : <input {...inputProps} />;
 
     return (
       <div {...theme(`react-autowhatever-${id}-container`, 'container', isOpen && 'containerOpen')}>
-        <input {...inputProps} />
+        {input}
         {renderedItems}
       </div>
     );

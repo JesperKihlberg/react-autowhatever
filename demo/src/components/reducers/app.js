@@ -35,6 +35,9 @@ const initialState = {
     value: 'Multi level',
     focusedSectionIndex: null,
     focusedItemIndex: null
+  },
+  9: {
+    value: 'Custom input'
   }
 };
 
