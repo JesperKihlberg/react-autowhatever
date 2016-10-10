@@ -146,23 +146,22 @@ export default class Autowhatever extends Component {
       };
 
       const renderedSubItems= multiLevel && (sectionIndex === focusedSectionIndex && itemIndex === focusedItemIndex) ? this.renderSubItems(theme):'';
-      let remainingItemProps = {};
-
-      Object.keys(itemProps).forEach(function(key) {
-        if(key != 'className') {
-          remainingItemProps[key] = itemProps[key];
-        }
-      });
+      const trimmedItemProps = this.getTrimmedItemProps(itemProps);
 
       return (
         <li className={itemProps.className} key={itemIndex}>
-          <div {...remainingItemProps}>
+          <div {...trimmedItemProps}>
             {renderItem(item)}
           </div>
           {renderedSubItems}
         </li>
       );
     });
+  }
+
+  getTrimmedItemProps(itemProps) {
+    const { className, subItemIndex, isPrimaryFocused, ...liItemProps} = itemProps;
+    return liItemProps;
   }
 
   renderSubItemsList(theme, subItems) {
@@ -200,8 +199,10 @@ export default class Autowhatever extends Component {
         onClick: onClickFn
       };
 
+      const trimmedItemProps = this.getTrimmedItemProps(itemProps);
+
       return (
-        <li {...itemProps}>
+        <li {...trimmedItemProps} className={itemProps.className}>
           {renderSubItem(item)}
         </li>
       );
